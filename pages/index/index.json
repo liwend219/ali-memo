@@ -1,0 +1,10 @@
+{
+  "defaultTitle": "叮咚心情",
+  "usingComponents": {
+    "tabs": "mini-antui/es/tabs/index",
+    "tab-content": "mini-antui/es/tabs/tab-content/index",
+    "modal": "mini-antui/es/modal/index",
+    "am-checkbox":"mini-antui/es/am-checkbox/index",
+    "count-down": "../../components/count-down/index"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/hole/hole",
+    "pages/diary/diary",
+    "pages/mine/mine",
+    "pages/calendar/calendar"
+  ],
+  "window": {
+    "defaultTitle": "My App"
+  },
+  "tabBar": {
+    "textColor": "#dddddd",
+    "selectedColor": "#49a9ee",
+    "backgroundColor": "#ffffff",
+    "items": [
+      {
+        "pagePath": "pages/index/index",
+        "icon": "./images/zhuye.png",
+        "activeIcon": "./images/zhuyeclick.png",
+        "name": "首页"
+      },
+      {
+        "pagePath": "pages/hole/hole",
+        "icon": "./images/hot.png",
+        "activeIcon": "./images/hotclick.png",
+        "name": "树洞"
+      },
+      {
+        "pagePath": "pages/calendar/calendar",
+        "icon": "./images/faxian.png",
+        "activeIcon": "./images/faxianclick.png",
+        "name": "情绪日历"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "icon": "./images/gerenzhongxin.png",
+        "activeIcon": "./images/gerenzhongxinclick.png",
+        "name": "我的"
+      }
+    ]
+  }
+}

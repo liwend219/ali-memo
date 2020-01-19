@@ -1,0 +1,65 @@
+<view style="width:100%;">
+  <view class="mine-box">
+    <view class="mine-pic">
+      <view class="pic-box">
+        <image src="{{imgUrl}}" mode="scaleToFill" />
+      </view>
+      <view style="text-align:center;padding-top:15rpx;">{{nickName}}</view>
+    </view>
+  </view>
+  <picker onChange="dayChange" value="{{selectVal}}" range="{{objectArray}}" range-key="name">
+    <view class="row">
+      <list-item
+        className="select-mood"
+        arrow="test"
+        onClick="dayChange"
+        index="items2-1"
+        key="items2-1"
+      >
+        临近提醒天数
+        <view slot="extra">
+          {{objectArray[selectVal].name}}
+        </view>
+      </list-item>
+    </view>
+  </picker>
+  <list >
+    <list-item
+      
+    >
+    自动提醒
+      <view class="am-list-brief">{{item.brief}}</view>
+      <view slot="extra">
+        <switch checked="{{remind}}" onChange="switchChange"/>
+      </view>
+  </list>
+  <list-item
+        className="select-mood"
+        arrow="test"
+        onClick="showOpinionBox"
+        index="items2-1"
+        key="items2-1"
+      >
+        留言给开发者
+        <view slot="extra">
+          <!-- {{objectArray[selectVal].name}} -->
+        </view>
+      </list-item>
+</view>
+
+<modal
+      show="{{showOpinion}}"
+      onModalClick="onModalClick"
+      onModalClose="onModalClose"
+      
+    >
+      <view slot="header">建议</view>
+        <list>
+          <textarea onInput="onInputContent" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{opinion}}" onBlur="bindTextAreaBlur" auto-height placeholder="输入你想对我说的话" />
+        </list>
+        
+      <view slot="footer" class="qr-delete">
+        <text>发送给作者</text>
+        <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+      </view>
+    </modal>

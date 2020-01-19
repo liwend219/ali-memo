@@ -1,0 +1,93 @@
+<view class="calendar-page" style="width:100%">
+  <picker onChange="monthChange" value="{{nowMonth-1}}}" range="{{monthList}}" range-key="name">
+    <view class="row" style="margin:10rpx 0 20rpx 0;">
+      <list-item
+        className="select-mood"
+        arrow="test"
+        onClick="monthChange"
+        index="items2-1"
+        key="items2-1"
+        
+      >
+        选择月份
+        <view slot="extra">
+          {{monthList[nowMonth-1].name}}
+        </view>
+      </list-item>
+    </view>
+  </picker>
+  <view class="month-list">
+    <view class="list-item" style="color:#fff;background: #95e5ff;">开心</view>
+    <view class="list-item" style="color:#fff;background: #feeb9c;">一般</view>
+    <view class="list-item" style="color:#fff;background: #d9e0ea;">不开心</view>
+    <view class="list-item" style="color:#fff;background: #ff9cbd;">生气</view>
+  </view>
+  <view class="month-list">
+    <view class="list-item" style="background: #fff;">周日</view>
+    <view class="list-item" style="background: #fff;">周一</view>
+    <view class="list-item" style="background: #fff;">周二</view>
+    <view class="list-item" style="background: #fff;">周三</view>
+    <view class="list-item" style="background: #fff;">周四</view>
+    <view class="list-item" style="background: #fff;">周五</view>
+    <view class="list-item right-1" style="background: #fff;">周六</view>
+  </view>
+  <view class="month-list">
+    <view a:if="{{startDay != 7}}" a:for="{{startDay}}" class="list-item" style="background:none" key="{{item}}">
+    </view>
+    <view  a:for="{{days}}" style="{{dataObj[item].style}}" class="{{(item+startDay) % 7 == 0 ? 'list-item right-1':'list-item'}}" key="{{item}}" data-item="{{dataObj[item]}}" onTap="showDetail">{{item}} 
+      <view class="hot-1" a:if="{{dataObj[item].dop}}"></view>
+    </view>
+  </view>
+  <view class="state-txt">
+    <text a:if="{{sta==0}}">最近状态不错哦，继续保持</text>
+    <text a:if="{{sta==1}}">生活不止眼前的苟且，还有诗和远方</text>
+    <text a:if="{{sta==2}}">最近有些丧呢，开心起来</text>
+    <text a:if="{{sta==3}}">气大伤身，看开就好啦</text>
+  </view>
+  <view class="today-list">
+    <!-- {{dataObj[selectDay].arr}} -->
+
+    <text class="text-detail" style="text-align:left">
+      <view class="title-detail">日记：</view>
+      <view a:for="{{nowMonthData[nowDate].arr}}" key="{{item}}">
+        <text a:if="{{item.name == 'diary'}}">{{item.content}}</text>
+      </view>
+      <view class="title-detail">待办：</view>
+      <view a:for="{{dataObj[nowDate].arr}}" key="{{item}}">
+        <text a:if="{{item.name == 'memo'}}">{{item.content}}</text>
+      </view>
+      <view class="title-detail">纪念日：</view>
+      <view a:for="{{dataObj[nowDate].arr}}" key="{{item}}">
+        <text a:if="{{item.name == 'time'}}">{{item.title}}</text>
+      </view>
+    </text>
+  </view>
+</view>
+
+
+<modal
+  show="{{showBox}}"
+  onModalClick="onModalClose"
+  onModalClose="onModalClose"
+  style="height:220rpx;overflow: auto;"
+>
+  <view slot="header">详情</view>
+
+  <scroll-view scroll-x="{{true}}" style="text-align:left;height:500rpx;">
+    <view class="title-detail">日记：</view>
+    <view a:for="{{detailList}}" key="{{item}}">
+      <text a:if="{{item.name == 'diary'}}">{{item.content}}</text>
+    </view>
+    <view class="title-detail">待办：</view>
+    <view a:for="{{detailList}}" key="{{item}}">
+      <text a:if="{{item.name == 'memo'}}">{{item.content}}</text>
+    </view>
+    <view class="title-detail">纪念日：</view>
+    <view a:for="{{detailList}}" key="{{item}}">
+      <text a:if="{{item.name == 'time'}}">{{item.title}}</text>
+    </view>
+  </scroll-view>
+
+  <view slot="footer">确定</view>
+</modal>
+

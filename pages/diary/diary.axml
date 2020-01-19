@@ -1,0 +1,251 @@
+<view style="width:100%;font-size:35rpx" a:if="{{info.types == 0}}">
+  <list >
+    <view style="padding:30rpx 10px 10rpx 32rpx;">日记本</view>
+    <input-item
+      placeholderStyle="font-size:35rpx"
+      data-field="name"
+      placeholder="如：今天很开心"
+      type="text"
+      value="{{info.title}}"
+      clear="{{true}}"
+      onClear="onClear"
+      onInput="onInputTitle">
+        标题
+    </input-item>
+    <textarea onInput="onInputContent" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{info.content}}" onBlur="bindTextAreaBlur" auto-height placeholder="输入日记内容" />
+  </list>
+
+  <picker onChange="moodChange" value="{{info.moodStatus}}" range="{{objectArray}}" range-key="name">
+    <view class="row">
+      <list-item
+        className="select-mood"
+        arrow="test"
+        onClick="moodChange"
+        index="items2-1"
+        key="items2-1"
+      >
+        心情如何？
+        <view slot="extra">
+          {{objectArray[info.moodStatus].name}}
+        </view>
+      </list-item>
+    </view>
+  </picker>
+
+  <list-item
+    className="select-mood"
+    arrow="test"
+    onClick="selectDate"
+    index="items2-1"
+    key="items2-1"
+  >
+    选择日期
+    <view  slot="extra">
+      {{info.date}}
+    </view>
+  </list-item>
+
+  <list-item
+    className="select-mood"
+    arrow="test"
+    onClick="uploadPic"
+    index="items2-1"
+    key="items2-1"
+  >
+    上传图片(非必要)
+    <view slot="extra">
+      选择图片
+    </view>
+  </list-item>
+
+
+  <!-- <list-item
+    className="select-mood"
+    onClick="checkOpen"
+    index="items2-1"
+    key="items2-1"
+  >
+    是否同时发布到树洞
+    <view slot="extra">
+      <switch  checked="{{info.isOpen}}" />
+    </view>
+  </list-item> -->
+  <view class="pic-box" >
+    <view class="pic-item" a:for="{{info.tmpPic}}" a:key="{{index}}">
+      <image style="width:100%;height:100%;" mode="aspectFit" src="{{item}}" />
+    </view>
+  </view>
+  <view>
+    
+  </view>
+  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">保存</button>
+</view>
+
+<view style="width: 100%;" a:if="{{info.types == 1}}">
+  <list >
+    <view style="padding:30rpx 10px 10rpx 32rpx;">备忘录</view>
+    <textarea onInput="onInputContent" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{info.content}}" onBlur="bindTextAreaBlur" auto-height placeholder="如：聚会轰趴" />
+  </list>
+
+  <picker onChange="stateChange" value="{{info.state}}" range="{{memoList}}" range-key="name">
+    <view class="row">
+      <list-item
+        className="select-mood"
+        arrow="test"
+        onClick="stateChange"
+        index="items2-1"
+        key="items2-1"
+      >
+        完成状态
+        <view slot="extra">
+          {{memoList[info.state].name}}
+        </view>
+      </list-item>
+    </view>
+  </picker>
+  <list-item
+    className="select-mood"
+    arrow="test"
+    onClick="selectDate"
+    index="items2-1"
+    key="items2-1"
+  >
+    事件日期
+    <view  slot="extra">
+      {{info.date}}
+    </view>
+  </list-item>
+
+  <list-item
+    className="select-mood"
+    arrow="test"
+    onClick="selectTime"
+    index="items2-1"
+    key="items2-1"
+  >
+    事件时间
+    <view  slot="extra">
+      {{info.time}}
+    </view>
+  </list-item>
+  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">保存</button>
+</view>
+
+<view style="width: 100%;" a:if="{{info.types == 2}}">
+  <list >
+    <view style="padding:30rpx 10px 10rpx 32rpx;">纪念日</view>
+    <input-item
+      placeholderStyle="font-size:35rpx"
+      data-field="name"
+      placeholder="如：结婚纪念日"
+      type="text"
+      value="{{info.title}}"
+      clear="{{true}}"
+      onClear="onClear"
+      onInput="onInputTitle">
+        标题
+    </input-item>
+    <list-item
+      className="select-mood"
+      arrow="test"
+      onClick="selectDate"
+      index="items2-1"
+      key="items2-1"
+    >
+      截止日期
+      <view slot="extra">
+        {{info.date}}
+      </view>
+    </list-item>
+    <list-item
+    className="select-mood"
+    arrow="test"
+    onClick="selectTime"
+    index="items2-1"
+    key="items2-1"
+  >
+    截止时间
+    <view  slot="extra">
+      {{info.time}}
+    </view>
+  </list-item>
+  </list>
+  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">保存</button>
+</view>
+
+
+<view style="width:100%;font-size:35rpx" a:if="{{info.types == 4}}">
+  <list >
+    <view style="padding:30rpx 10px 10rpx 32rpx;">树洞</view>
+    <view class="demo-item">
+      <notice enableMarquee="{{true}}" marqueeProps="{{loop: true, leading: 500, trailing: 800, fps: 10 }}">树洞内容所有人可见，不得发布任何违法内容</notice>
+    </view>
+    <textarea onInput="onInputContent" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{info.content}}" onBlur="bindTextAreaBlur" auto-height placeholder="输入树洞内容" />
+  </list>
+
+  <picker onChange="moodChange" value="{{info.moodStatus}}" range="{{objectArray}}" range-key="name">
+    <view class="row">
+      <list-item
+        className="select-mood"
+        arrow="test"
+        onClick="moodChange"
+        index="items2-1"
+        key="items2-1"
+      >
+        心情如何？
+        <view slot="extra">
+          {{objectArray[info.moodStatus].name}}
+        </view>
+      </list-item>
+    </view>
+  </picker>
+
+  <!-- <list-item
+    className="select-mood"
+    arrow="test"
+    onClick="selectDate"
+    index="items2-1"
+    key="items2-1"
+  >
+    选择日期
+    <view  slot="extra">
+      {{info.date}}
+    </view>
+  </list-item> -->
+
+  <list-item
+    className="select-mood"
+    arrow="test"
+    onClick="uploadPic"
+    index="items2-1"
+    key="items2-1"
+  >
+    上传图片(非必要)
+    <view slot="extra">
+      选择图片
+    </view>
+  </list-item>
+
+
+  <!-- <list-item
+    className="select-mood"
+    onClick="checkOpen"
+    index="items2-1"
+    key="items2-1"
+  >
+    是否同时发布到树洞
+    <view slot="extra">
+      <switch  checked="{{info.isOpen}}" />
+    </view>
+  </list-item> -->
+  <view class="pic-box" >
+    <view class="pic-item" a:for="{{info.tmpPic}}" a:key="{{index}}">
+      <image style="width:100%;height:100%;" mode="aspectFit" src="{{item}}" />
+    </view>
+  </view>
+  <view>
+    
+  </view>
+  <button style="width:90%;margin:30rpx auto;" onTap="saveHole" type="primary">发布</button>
+</view>
+
