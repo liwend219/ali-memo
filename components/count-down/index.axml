@@ -1,4 +1,4 @@
 <text class="countdown-class">
-  {{time}}
+  {{statusTxt}} {{time}}
 </text>
 

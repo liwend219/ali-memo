@@ -9,6 +9,7 @@ Component({
     externalClasses: ['countdown-class'],
     data: {
         time: '',
+        statusTxt:'',
         resultFormat: [],
         changeFormat: false
     },
@@ -40,7 +41,7 @@ Component({
         },
         init() {
             const self = this;
-            setTimeout(function () {
+            setTimeout( () => {
                 self.getLastTime.call(self);
             }, 1000);
         },
@@ -62,17 +63,33 @@ Component({
 
                 if (this.data.changeFormat) time = `${hour}${format[1]}${minute}${format[2]}${second}${format[3]}`;
                 else time = `${hour}:${minute}:${second}`;
-
                 if (!data.clearTimer) this.init.call(this);
+                this.setData({
+                  statusTxt:'还有'
+                })
             } else {
-                this.endfn();
+                let gapTime2 = gapTime - gapTime * 2
+                day = this.formatNum(parseInt(gapTime2 / 86400));
+                let lastTime = gapTime2 % 86400;
+                const hour = this.formatNum(parseInt(lastTime / 3600));
+                lastTime = lastTime % 3600;
+                const minute = this.formatNum(parseInt(lastTime / 60));
+                const second = this.formatNum(lastTime % 60);
+
+                if (this.data.changeFormat) time = `${hour}${format[1]}${minute}${format[2]}${second}${format[3]}`;
+                else time = `${hour}:${minute}:${second}`;
+                if (!data.clearTimer) this.init.call(this);
+                this.setData({
+                  statusTxt:'已过'
+                })
+                // this.endfn();
             }
 
             if (data.showDay) {
                 if (this.data.changeFormat) {
                     result = `${day}${format[0]} ${time}`;
                 } else {
-                    result = `${day}d ${time}`;
+                    result = `${day}天 ${time}`;
                 }
             } else {
                 result = time;

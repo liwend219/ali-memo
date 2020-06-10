@@ -1,4 +1,4 @@
-var http = require('../../lib/http.js')
+import ajax from '../../lib/fetch'
 Page({
   data: {
     userId:'',
@@ -30,16 +30,15 @@ Page({
     ],
   },
   onLoad() {
-    var self = this
     my.getStorage({
       key: 'userInfo', // 缓存数据的key
       success: (res) => {
-        self.setData({
+        this.setData({
           imgUrl:res.data.avatar,
           nickName:res.data.nickName,
           userId:res.data.userId,
         })
-        self.getSet(res.data.userId)
+        this.getSet(res.data.userId)
       },
     });
   },
@@ -65,25 +64,18 @@ Page({
     
   },
   setRemind(len,val){
-    my.request({
-        url: http.roots + 'setSet',
-        method: 'POST',
-        data: {
-            userId:this.data.userId,
-            remindLen:len,
-            remind:val
-        },
-        header: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        success: function (res) {
-            if(res.data.sta == 1){
-                // self.setData({
-                //     ["setInfo.remindLen"]: res.data.data[0].remindLen,
-                //     ["setInfo.remind"]: res.data.data[0].remind
-                // })
-            }
-        }
+    let data = {
+        userId:this.data.userId,
+        remindLen:len,
+        remind:val
+    }
+    ajax('setSet',data,(res) => {
+      if(res.sta == 1){
+          // self.setData({
+          //     ["setInfo.remindLen"]: res.data[0].remindLen,
+          //     ["setInfo.remind"]: res.data[0].remind
+          // })
+      }
     })
   },
   onInputContent(e){
@@ -97,32 +89,23 @@ Page({
     })
   },
   onModalClick(){
-    var self = this
     this.setData({
       showLoading:true
     })
-    my.request({
-        url: http.roots + "opinion",
-        method: 'POST',
-        header: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        data: {
-          userId:self.data.userId,
-          nickName:self.data.nickName,
-          opinion:self.data.opinion
-        },
-        dataType: 'json',
-        success: function(res) {
-          self.setData({
-              showLoading:false
-          })
-          my.showToast({
-            content: res.data.msg,
-            duration: 2000
-          });
-        }
+    let data = {
+      userId:this.data.userId,
+      nickName:this.data.nickName,
+      opinion:this.data.opinion
+    }
+    ajax('opinion',data,(res) => {
+      this.setData({
+        showLoading:false
       })
+      my.showToast({
+        content: res.msg,
+        duration: 2000
+      });
+    })
     this.setData({
       showOpinion:false
     })
@@ -151,37 +134,25 @@ Page({
     this.setRemind(len,e.detail.value)
   },
   getSet(){
-    var self = this
-    my.request({
-        url: http.roots + 'getSet',
-        method: 'POST',
-        data: {
-            userId:this.data.userId
-        },
-        header: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        success: function (res) {
-          if(res.data.sta == 1){
-            let t = 0;
-            if(res.data.data.remindLen == 1){
-              t=0
-            }else if(res.data.data.remindLen == 3){
-              t=1
-            }else if(res.data.data.remindLen == 5){
-              t=2
-            }else if(res.data.data.remindLen == 7){
-              t=3
-            }else{
-              t=0
-            }
-
-            self.setData({
-              selectVal:t,
-              remind:res.data.data.remind
-            })
-          }
+    ajax('getSet',{userId:this.data.userId},(res) => {
+      if(res.sta == 1){
+        let t = 0;
+        if(res.data.remindLen == 1){
+          t=0
+        }else if(res.data.remindLen == 3){
+          t=1
+        }else if(res.data.remindLen == 5){
+          t=2
+        }else if(res.data.remindLen == 7){
+          t=3
+        }else{
+          t=0
         }
+        this.setData({
+          selectVal:t,
+          remind:res.data.remind
+        })
+      }
     })
   }
 });

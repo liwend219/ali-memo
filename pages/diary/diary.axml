@@ -4,7 +4,8 @@
     <input-item
       placeholderStyle="font-size:35rpx"
       data-field="name"
-      placeholder="如：今天很开心"
+      maxlength="12"
+      placeholder="输入日记标题(可省略)"
       type="text"
       value="{{info.title}}"
       clear="{{true}}"
@@ -12,7 +13,7 @@
       onInput="onInputTitle">
         标题
     </input-item>
-    <textarea onInput="onInputContent" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{info.content}}" onBlur="bindTextAreaBlur" auto-height placeholder="输入日记内容" />
+    <textarea onInput="onInputContent" maxlength="600" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{info.content}}" onBlur="bindTextAreaBlur" auto-height placeholder="输入日记内容" />
   </list>
 
   <picker onChange="moodChange" value="{{info.moodStatus}}" range="{{objectArray}}" range-key="name">
@@ -57,19 +58,6 @@
       选择图片
     </view>
   </list-item>
-
-
-  <!-- <list-item
-    className="select-mood"
-    onClick="checkOpen"
-    index="items2-1"
-    key="items2-1"
-  >
-    是否同时发布到树洞
-    <view slot="extra">
-      <switch  checked="{{info.isOpen}}" />
-    </view>
-  </list-item> -->
   <view class="pic-box" >
     <view class="pic-item" a:for="{{info.tmpPic}}" a:key="{{index}}">
       <image style="width:100%;height:100%;" mode="aspectFit" src="{{item}}" />
@@ -200,19 +188,6 @@
     </view>
   </picker>
 
-  <!-- <list-item
-    className="select-mood"
-    arrow="test"
-    onClick="selectDate"
-    index="items2-1"
-    key="items2-1"
-  >
-    选择日期
-    <view  slot="extra">
-      {{info.date}}
-    </view>
-  </list-item> -->
-
   <list-item
     className="select-mood"
     arrow="test"
@@ -226,18 +201,6 @@
     </view>
   </list-item>
 
-
-  <!-- <list-item
-    className="select-mood"
-    onClick="checkOpen"
-    index="items2-1"
-    key="items2-1"
-  >
-    是否同时发布到树洞
-    <view slot="extra">
-      <switch  checked="{{info.isOpen}}" />
-    </view>
-  </list-item> -->
   <view class="pic-box" >
     <view class="pic-item" a:for="{{info.tmpPic}}" a:key="{{index}}">
       <image style="width:100%;height:100%;" mode="aspectFit" src="{{item}}" />

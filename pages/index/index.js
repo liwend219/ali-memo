@@ -1,9 +1,16 @@
-var http = require('../../lib/http.js')
+import ajax from '../../lib/fetch'
+var util = require('../../lib/time.js')
 Page({
   data: {
+    info:{
+        txt:''
+    },
+    tmpData:{},
     diaryArr:[],
     memoArr:[],
+    deleteHole:false,
     timeArr:[],
+    showComment:false,
     diaryItem:'',
     isShowTail:false,
     isDelete:false,
@@ -11,6 +18,9 @@ Page({
     showLoading:false,
     myFormat1: ['天', '时', '分', '秒'],
     memoCount:0,
+    holeDType:1,
+    holeList:[],
+    show:false,
     stateList:[
       '../../images/cool.png',
       '../../images/flushed.png',
@@ -20,47 +30,36 @@ Page({
     isClear:false,
     tabs: [
       {
-        title: '日记本',
-        // badgeType: 'dot',
+        title: '日记'
       },
       {
-        title: '备忘录'
-      },
-      {
-        title: '纪念日',
-        
-      },
+        title: '树洞'
+      }
     ],
     activeTab: 0,
-    userId:''
+    userId:'',
+    nickName:'',
+    avatar:''
   },
   onLoad(query) {
+    if(query && query.activeTab){
+      this.setData({
+        activeTab:query.activeTab
+      })
+    }
     // 页面加载
-    var self = this
-    // my.getAuthCode({
-    //         scopes: 'auth_user',
-    //         success: (res) => {
-    //           my.getAuthUserInfo({
-    //             success: (userInfo) => {
-    //               let datas = {
-    //                 authCode: res.authCode,
-    //                 avatar: userInfo.avatar,
-    //                 nickName: userInfo.nickName,
-    //                 // userId:res.data.userId
-    //               }
-    //               self.linkLogin(datas)
-    //             }
-    //           });
-    //         },
-    //       });
     my.getStorage({
       key: 'userInfo',
-      success: function(res) {
+      success:(res) => {
         if(res.data){
-          self.setData({
-            userId:res.data.userId
+          this.setData({
+            userId:res.data.userId,
+            nickName:res.data.nickName,
+            avatar:res.data.avatar
           })
-          self.getDiary(res.data.userId)
+          
+          this.getDiary(res.data.userId)
+          this.getHole(res.data.userId)
         }else{
           my.getAuthCode({
             scopes: 'auth_user',
@@ -73,20 +72,18 @@ Page({
                     nickName: userInfo.nickName,
                     // userId:res.data.userId
                   }
-                  self.linkLogin(datas)
+                  this.linkLogin(datas)
                 }
               });
             },
           });
         }
-      },
-      fail: function(res){
-
       }
     })
     
   },
-  onReady() {
+  onReady(e) {
+    
     // 页面加载完成
   },
   onShow() {
@@ -103,6 +100,11 @@ Page({
   },
   onPullDownRefresh() {
     // 页面被下拉
+    if(this.data.activeTab == 0){
+      this.getDiary(this.data.userId)
+    }else{
+      this.getHole(this.data.userId)
+    }
   },
   onReachBottom() {
     // 页面被拉到底部
@@ -110,8 +112,8 @@ Page({
   onShareAppMessage() {
     // 返回自定义分享信息
     return {
-      title: 'My App',
-      desc: 'My App description',
+      title: '叮咚心情日记',
+      desc: '一款记录你心情和写日记的唯美小程序',
       path: 'pages/index/index',
     };
   },
@@ -133,153 +135,99 @@ Page({
     });
   },
   linkLogin (datas) {
-    var self = this
-    my.request({
-      url: http.roots + "saveOpenID",
-      method: 'POST',
-      header: {
-          "Content-Type": "application/x-www-form-urlencoded"
-      },
-      data: datas,
-      dataType: 'json',
-      success: function(res) {
-        if(res.data.sta == 1){
+    ajax('saveOpenID',datas,(res) => {
+      if(res){
+        if(res.sta == 1){
           let data2 = {
             ...datas,
-            ...res.data.data
+            ...res.data
           }
           my.setStorage({
             key: 'userInfo',
             data: data2,
-            success: function() {
+            success: () => {
               
             }
           });
-          self.getDiary(res.data.data.userId)
-          self.setData({
-            userId:res.data.data.userId
+          this.setData({
+            userId:res.data.userId
           })
+          this.getDiary(res.data.userId)
+          this.getHole(res.data.userId)
         }
-      },
-      fail: function(res) {
-        console.log('失败')
-      },
-      complete: function(res) {
-        
       }
-    });
+    })
   },
 
   getDiary(userid){
-    var self = this
-    my.request({
-      url: http.roots + "getDiary",
-      method: 'POST',
-      header: {
-          "Content-Type": "application/x-www-form-urlencoded"
-      },
-      data: {
-        userId:userid
-      },
-      dataType: 'json',
-      success: function(res) {
-        self.setData({
-          diaryArr:res.data.data.diary.reverse(),
-          memoArr:res.data.data.memo.reverse(),
-          timeArr:res.data.data.time.reverse(),
+    ajax('getDiary',{userId:userid},(res) => {
+      my.stopPullDownRefresh()
+      if(res.sta == 1){
+        this.setData({
+          diaryArr:res.data.diary.reverse(),
+          memoArr:res.data.memo.reverse(),
+          timeArr:res.data.time.reverse(),
+          show:res.show
         })
-        if(res.data.data.memoCount != 0){
-          self.setData({
-            ["tabs[1].badgeType"]:'text',
-            ["tabs[1].badgeText"]:res.data.data.memoCount
-          })
-        }else{
-          self.setData({
-            ['tabs[1].badgeType']:'',
-            ["tabs[1].badgeText"]:''
-          })
-        }
-        if(res.data.data.timeCount != 0){
-          self.setData({
-            ['tabs[2].badgeType']:'dot'
-          })
-        }else{
-          self.setData({
-            ['tabs[2].badgeType']:''
-          })
-        }
-      },
-      fail: function(err) {
-        console.log('失败')
-        console.log(err)
       }
-    });
+    })
   },
 
   newDiary:function(){
+      let i ;
+      if(this.data.activeTab == 0){
+        i = 0
+      }else{
+        i = 4
+      }
       my.navigateTo({
-          url: '../diary/diary?idx='+ this.data.activeTab
+          url: '../diary/diary?idx='+ i
       })
     },
     deletes:function(e){
       let t = e.currentTarget.dataset.item
       t.userId = this.data.userId
       t.types = this.data.activeTab
+      if(this.data.activeTab == 0){
+        t.types = 'diary'
+      }
       this.setData({
         isDelete:true,
         deleteItem: t,
       })
     },
     onModalClick(){
-      
       this.data.timeArr.forEach(val => {
         if(val._id == this.data.deleteItem._id){
           val.isClear = true
         }
       })
-      this.setData({
-        showLoading:true
-      })
-      var self = this
       
-      my.request({
-      url: http.roots + 'deleteDiary',
-      method: 'POST',
-      header: {
-          "Content-Type": "application/x-www-form-urlencoded"
-      },
-      data: self.data.deleteItem,
-      dataType: 'json',
-      success: function(res) {
-        if(res.data.sta == 1){
-          self.setData({
-            isDelete:false,
-            showLoading:false
-          })
-          my.showToast({
-            type: 'success',
-            content: '删除成功',
-            duration: 2000
-          });
-        }else{
-          my.showToast({
-            type: 'success',
-            content: '删除失败',
-            duration: 2000
-          });
-        }
-        getCurrentPages()[getCurrentPages().length - 1].onLoad()
-        // self.setData({
-        //   diaryArr:res.data.data.diary,
-        //   memoArr:res.data.data.memo,
-        //   time:res.data.data.time
-        // })
-      },
-      fail: function(res) {
-        console.log('失败')
-      }
-    });
-
+      this.setData({
+        showLoading:true,
+        isDelete:false,
+        timeArr:this.data.timeArr
+      })
+      ajax('deleteDiary',this.data.deleteItem,(res) => {
+        if(res.sta == 1){
+            this.setData({
+              isDelete:false,
+              showLoading:false
+            })
+            my.showToast({
+              type: 'success',
+              content: '删除成功',
+              duration: 2000
+            });
+          }else{
+            my.showToast({
+              type: 'error',
+              content: '删除失败',
+              duration: 2000
+            });
+          }
+          getCurrentPages()[getCurrentPages().length - 1].onLoad()
+      })
     },
     onModalClose(){
       this.setData({
@@ -297,70 +245,194 @@ Page({
           url: '../diary/diary?idx='+idx+'&data=' + JSON.stringify(e.currentTarget.dataset.item)
       })
     },
-    stateChange(e){
-      var self = this
-      let t = e.target.dataset.item
-      t.state = e.detail.value
-      t.userId = this.data.userId
-      my.request({
-        url: http.roots + 'changeState',
-        method: 'POST',
-        data: t,
-        header: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        success: function (res) {
-          if(res.data.sta == 1){
-            my.request({
-              url: http.roots + 'getDiary',
-              method: 'POST',
-              data: {
-                userId: self.data.userId
-              },
-              header: {
-                "Content-Type": "application/x-www-form-urlencoded"
-              },
-              success: function (res) {
-                if(res.data.sta == 1){
-                  self.setData({
-                    diaryArr:res.data.data.diary.reverse(),
-                    memoArr:res.data.data.memo.reverse(),
-                    timeArr:res.data.data.time.reverse(),
-                    memoCount: res.data.data.memoCount,
-                    timeCount: res.data.data.memoCount,
-                  })
-
-                  if(res.data.data.memoCount != 0){
-                    self.setData({
-                      ["tabs[1].badgeType"]:'text',
-                      ["tabs[1].badgeText"]:res.data.data.memoCount
-                    })
-                  }else{
-                    self.setData({
-                      ['tabs[1].badgeType']:'',
-                      ["tabs[1].badgeText"]:''
-                    })
-                  }
-                  if(res.data.data.timeCount != 0){
-                    self.setData({
-                      ['tabs[2].badgeType']:'dot'
-                    })
-                  }else{
-                    self.setData({
-                      ['tabs[2].badgeType']:''
-                    })
-                  }
-                }
-              }
-            })
-          }
-        }
-      })
-    },
     showTail(e){
       this.setData({
         diaryItem:e.currentTarget.dataset.item,
         isShowTail:true,
+      })
+    },
+    getHole(userId){
+      ajax('getHole',{userId:userId},(res) => {
+        my.stopPullDownRefresh()
+        if(res.sta == 1){
+          res.data.forEach((val) => {
+            val.time = util.fromDate(val.timer)
+          })
+          this.setData({
+            holeList:res.data
+          })
+        }
+      })
+    },
+    onModalHoleClick(){
+      this.setData({
+        showLoading:true,
+      })
+      this.setData({
+        ["tmpData.txt"]:this.data.info.txt
+      })
+      if(!this.data.info.txt){
+        my.showToast({
+          content: '评论不可为空',
+          duration: 2000
+        });
+        this.setData({
+          showLoading:false,
+        })
+        return 
+      }
+      ajax('publish/comment',this.data.tmpData,(res) => {
+        if(res.sta == 1){
+          this.setData({
+            showLoading:false,
+            showComment:false,
+            ["info.txt"]:''
+          })
+          this.getHole(this.data.userId)
+        }
+      })
+    },
+    onModalHoleClose(){
+        this.setData({
+            showComment:false
+        }) 
+    },
+    onInputTitle(e){
+      this.setData({
+        ["info.txt"]:e.detail.value
+      })
+    },
+    star(item){
+      let data = item.target.dataset.item
+
+      ajax('star',{
+        userId:this.data.userId,
+        pid:data.pid
+      },(res) => {
+        if(res.sta == 1){
+          this.getHole(this.data.userId)
+        }else{
+          my.showToast({
+            type: 'error',
+            content: res.msg,
+            duration: 2000
+          });
+        }
+      })
+    },
+    onClear(){
+      this.setData({
+        ['info.txt']:''
+      })
+    },
+    newHole(){
+      my.navigateTo({
+          url: '../diary/diary?idx=4'
+      })
+    },
+    showCommentBox(item){
+        let data = item.target.dataset.item
+        let tmp = {
+            userId:this.data.userId,
+            nickName:this.data.nickName,
+            avatar:this.data.avatar,
+            pid:data.pid,
+            txt:this.data.info.txt
+        }
+        
+        this.setData({
+            showComment:true,
+            tmpData:tmp
+        })  
+    },
+    deleteHoleClick(){
+      if(!this.data.info.txt){
+        my.showToast({
+          content: '输入口令',
+          duration: 2000
+        });
+        return
+      }
+      let obj = {
+        _id:this.data.deleteItem._id,
+        pid:this.data.deleteItem.pid,
+        key:this.data.info.txt,
+        userId:this.data.userId,
+        nickName:this.data.nickName
+      }
+      if(this.data.holeDType == 1){
+        ajax('deleteHole',obj,(res) => {
+          if(res.sta == 1){
+            this.setData({
+              deleteHole:false,
+              ["info.txt"]:'',
+              showLoading:false
+            })
+            my.showToast({
+              type: 'success',
+              content: '删除成功',
+              duration: 2000
+            });
+          }else{
+            this.setData({
+              deleteHole:false,
+              ["info.txt"]:'',
+              showLoading:false
+            })
+            my.showToast({
+              type: 'error',
+              content: res.msg,
+              duration: 2000
+            });
+          }
+          getCurrentPages()[getCurrentPages().length - 1].onLoad()
+        })
+      }else{
+        ajax('deleteComment',obj,(res) => {
+          if(res.sta == 1){
+            this.setData({
+              deleteHole:false,
+              ["info.txt"]:'',
+              showLoading:false
+            })
+            my.showToast({
+              type: 'success',
+              content: '删除成功',
+              duration: 2000
+            });
+          }else{
+            this.setData({
+              deleteHole:false,
+              ["info.txt"]:'',
+              showLoading:false
+            })
+            my.showToast({
+              type: 'error',
+              content: res.msg,
+              duration: 2000
+            });
+          }
+          getCurrentPages()[getCurrentPages().length - 1].onLoad()
+        })
+      }
+    },
+    deleteHoleClose(){
+      this.setData({
+        deleteHole:false,
+        deleteItem: {},
+      })
+    },
+    deleteH(e){
+      let t = e.currentTarget.dataset.item
+      t.userId = this.data.userId
+      t.types = this.data.activeTab
+      if(e.currentTarget.dataset.pid){
+        t.pid = e.currentTarget.dataset.pid
+      }
+      this.setData({
+        deleteHole:true,
+        holeDType:e.currentTarget.dataset.type,
+        deleteItem: t,
       })
     }
 });

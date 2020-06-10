@@ -1,4 +1,4 @@
-var http = require('../../lib/http.js')
+import ajax from '../../lib/fetch'
 Page({
   data: {
     toView: 'red',
@@ -29,20 +29,23 @@ Page({
     sta:[]
   },
   onLoad() {
-    var self = this
     this.initData2()
     my.getStorage({
       key: 'userInfo', // 缓存数据的key
       success: (res) => {
         if(res.data){
-          self.setData({
+          this.setData({
             userId:res.data.userId
           })
-          self.getData(res.data.userId)
+          this.getData(res.data.userId)
         }
       },
     });
     
+  },
+  onPullDownRefresh() {
+    // 页面被下拉
+    this.getData(this.data.userId)
   },
   monthChange(e){
     
@@ -65,7 +68,6 @@ Page({
     })
   },
   getData(id,mth){
-    var self = this;
     let Mth ;
     if(!mth){
       var date = new Date()
@@ -73,32 +75,22 @@ Page({
     }else{
       Mth = mth
     }
-    my.request({
-      url: http.roots + "getMonData",
-      method: 'POST',
-      header: {
-          "Content-Type": "application/x-www-form-urlencoded"
-      },
-      data: {
-        userId:id,
-        startDate:self.data._year + '-' + Mth + '-01',
-        endDate:self.data._year + '-' + Mth + '-30',
-      },
-      dataType: 'json',
-      success: function(res) {
-        if(res.data.sta == 1){
-          self.setData({
-            diaryArr:res.data.data.diary,
-            memoArr:res.data.data.memo,
-            timeArr:res.data.data.time
-          })
-          self.initData(mth)
-        }
-      },
-      fail: function(res) {
-        // console.log('失败')
+    let data = {
+      userId:id,
+      startDate:this.data._year + '-' + Mth + '-01',
+      endDate:this.data._year + '-' + Mth + '-30',
+    }
+    ajax('getMonData',data,(res) => {
+      my.stopPullDownRefresh()
+      if(res.sta == 1){
+        this.setData({
+          diaryArr:res.data.diary,
+          memoArr:res.data.memo,
+          timeArr:res.data.time
+        })
+        this.initData(mth)
       }
-    });
+    })
   },
   initData(mth){
     let obj = {},sta=[0,0,0,0]
@@ -167,7 +159,6 @@ Page({
     }
   },
   initData2(mth){
-    var self = this
     let date = new Date()
     let m = mth || date.getMonth() + 1;
     let m2 = date.getMonth() + 1

@@ -1,5 +1,6 @@
 {
   "defaultTitle": "叮咚心情",
+  "pullRefresh":true,
   "usingComponents": {
     "list": "mini-antui/es/list/index",
     "list-item": "mini-antui/es/list/list-item/index",

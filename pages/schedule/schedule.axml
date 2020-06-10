@@ -1,0 +1,77 @@
+<view class="schedule-page">
+  <tabs
+    tabs="{{tabs}}"
+    
+    onTabClick="handleTabClick"
+    onChange="handleTabChange"
+    onPlusClick="handlePlusClick"
+    activeTab="{{activeTab}}"
+  >
+    <block a:for="{{tabs}}">
+      <tab-content key="{{index}}" a:if="{{index == 0}}">
+        <view class="tab-content" >
+          <view class="memo-item" a:for="{{memoArr}}" key="{{item}}">
+            <label class="memo-1" >
+              <view class="memo-check">
+                <am-checkbox checked="{{item.state}}" data-item="{{item}}" onChange="stateChange" />
+                <text style="text-indent: 8px;" a:if="{{item.state}}">已完成</text>
+                <text a:if="{{!item.state}}" style="text-indent: 8px; color: red">{{item.status == 1?'即将到期':item.status == -1?'已过期':''}}</text>
+              </view>
+              <text>{{item.date}} {{item.time}}</text>
+            </label>
+            <view class="memo-2" style="{{item.status<0?'text-decoration:line-through;color:rgb(156, 156, 156)':''}}">
+              {{item.content}}
+            </view>
+
+            <view class="memo-3">
+              <view class="delete" data-item="{{item}}" onTap="deletes">删除</view>
+              <view class="change" data-item="{{item}}" onTap="modify">修改</view>
+            </view>
+          </view>
+          <view class="divider">
+            <view class="divder-line"></view>
+            <text>没有更多啦</text>
+            <view class="divder-line"></view>
+          </view>
+        </view>
+      </tab-content>
+      <tab-content key="{{index}}" a:if="{{index == 1}}">
+        <view class="tab-content">
+          <view class="time-item" a:for="{{timeArr}}" key="{{item}}">
+            <view style="padding-bottom:20rpx;">距离{{item.title}}<text style="color:#bcbcbc">（{{item.date}} {{item.time}}）</text></view>
+            <count-down
+              target="{{item.endDate}}"
+              clear-timer="{{ item.isClear }}"
+              show-day = "{{ true }}"
+              format="{{myFormat1}}"
+            ></count-down>
+            <view class="time-close" data-item="{{item}}" onTap="deletes">
+              ×
+            </view>
+          </view>
+          <view class="divider">
+            <view class="divder-line"></view>
+            <text>没有更多啦</text>
+            <view class="divder-line"></view>
+          </view>
+        </view>
+      </tab-content>
+    </block>
+  </tabs>
+</view>
+<view class="add-btn" onTap="newDiary">
+    +
+</view>
+<modal
+  show="{{isDelete}}"
+  onModalClick="onModalClick"
+  onModalClose="onModalClose"
+  
+>
+  <view slot="header">确认删除</view>
+  删除后不可恢复，取消点右上角×
+  <view slot="footer" class="qr-delete">
+    <text>确认删除</text>
+    <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+  </view>
+</modal>

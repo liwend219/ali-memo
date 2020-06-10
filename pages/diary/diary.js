@@ -1,8 +1,9 @@
 var http = require('../../lib/http.js')
+import ajax from '../../lib/fetch'
 Page({
   data: {
     title:'',
-    
+    maxFont:200,
     objectArray: [
       {
         id: 0,
@@ -52,7 +53,7 @@ Page({
     },
   },
   onLoad(e) {
-    if(e.idx){
+    if(e && e.idx){
       this.setData({
         ["info.types"]:e.idx
       })
@@ -82,11 +83,10 @@ Page({
         ["info.time"]:h+':'+min
       })
     }
-    var self = this
     my.getStorage({
       key: 'userInfo',
-      success: function(res) {
-        self.setData({
+      success: (res) => {
+        this.setData({
           ["info.userId"]:res.data.userId,
           ["info.nickName"]:res.data.nickName,
           ["info.avatar"]:res.data.avatar
@@ -139,14 +139,7 @@ Page({
     });
   },
   saveDiary(){
-    var self = this
-    if(this.data.info.types == 0 && !this.data.info.title){
-      my.showToast({
-        content: '标题不可为空',
-        duration: 2000
-      });
-      return 
-    }else if(this.data.info.types == 0 && !this.data.info.content){
+    if(this.data.info.types == 0 && !this.data.info.content){
       my.showToast({
         content: '内容不可为空',
         duration: 2000
@@ -170,38 +163,105 @@ Page({
     this.setData({
       ["info.pid"]:new Date().getTime()+'_dingdong_'+this.data.info.userId
     })
-    my.request({
-      url: http.roots + "saveDiary",
-      method: 'POST',
-      header: {
-          "Content-Type": "application/x-www-form-urlencoded"
-      },
-      data: this.data.info,
-      dataType: 'json',
-      success: function(res) {
+    ajax('saveDiary',this.data.info,(res) => {
+      if(res.sta == 1){
+        if(this.data.info.tmpPic.length != 0){
+          for(let i = 0; i < this.data.info.tmpPic.length; i++){
+            
+            my.uploadFile({
+              url: http.roots + "upload",
+              filePath: this.data.info.tmpPic[i],
+              fileType:'image',
+              fileName: 'img',
+              formData:{
+                pid:this.data.info.tmpPic2[i]
+              },
+              header: {  
+                "Content-Type": "multipart/form-data",
+                'accept': 'application/json'
+              },
+              success: (res) => {
+                var data=JSON.parse(res.data);
+                if(data.sta == 1){
+                  if(this.data.info.types == 0){
+                    my.reLaunch({
+                        url: '../index/index'
+                    })
+                  }else if(this.data.info.types == 1){
+                    my.navigateTo({
+                        url: '../schedule/schedule'
+                    })
+                  }else{
+                    my.navigateTo({
+                        url: '../schedule/schedule?activeTab=1'
+                    })
+                  }                  
+                }else{
+                  my.showToast({
+                    type: 'fail',
+                    content: '图片上传失败',
+                    duration: 2000
+                  });
+                }
+              }
+            })
+          }
+        }else{
+          if(this.data.info.types == 0){
+            my.reLaunch({
+                url: '../index/index'
+            })
+          }else if(this.data.info.types == 1){
+            my.reLaunch({
+                url: '../schedule/schedule'
+            })
+          }else{
+            my.reLaunch({
+                url: '../schedule/schedule'
+            })
+          }
+        }
         
-        if(res.data.sta == 1){
-          if(self.data.info.tmpPic.length != 0){
-            for(let i = 0; i < self.data.info.tmpPic.length; i++){
+      }else{
+        my.showToast({
+          type: 'fail',
+          content: '保存失败',
+          duration: 2000
+        });
+      }
+    })
+  },
+  saveHole(){
+    // /saveHole
+    if(!this.data.info.content){
+      my.showToast({
+        content: '内容不可为空',
+        duration: 2000
+      });
+      return
+    }
+    ajax('saveHole',this.data.info,(res) => {
+      if(res.sta == 1){
+        if(this.data.info.tmpPic.length != 0){
+            for(let i = 0; i < this.data.info.tmpPic.length; i++){
               my.uploadFile({
                 url: http.roots + "upload",
-                filePath: self.data.info.tmpPic[i],
+                filePath: this.data.info.tmpPic[i],
                 fileType:'image',
                 fileName: 'img',
                 formData:{
-                  pid:self.data.info.tmpPic2[i]
+                  pid:this.data.info.tmpPic2[i]
                 },
                 header: {  
                   "Content-Type": "multipart/form-data",
                   'accept': 'application/json'
                 },
-                success: function(res){
+                success: (res) => {
                   var data=JSON.parse(res.data);
                   if(data.sta == 1){
-                    my.reLaunch({
-                        url: '../index/index'
+                    my.navigateTo({
+                        url: '../index/index?activeTab=1'
                     })
-                    
                   }else{
                     my.showToast({
                       type: 'fail',
@@ -210,99 +270,19 @@ Page({
                     });
                   }
                 },
-                fail: function(err){
+                fail: (err) => {
+
                 },
               })
             }
-          }else{
-            my.reLaunch({
-                url: '../index/index'
-            })
-          }
-          
         }else{
-          my.showToast({
-            type: 'fail',
-            content: '保存失败',
-            duration: 2000
-          });
+          // my.reLaunch({
+          //     url: '../index/index?activeTab=1'
+          // })
+          my.navigateTo({
+              url: '../index/index?activeTab=1'
+          })
         }
-      },
-      fail: function(res) {
-        my.showToast({
-          type: 'fail',
-          content: '系统错误',
-          duration: 2000
-        });
-      },
-      complete: function(res) {
-        
-      }
-    });
-  },
-  saveHole(){
-    // /saveHole
-    var self = this
-    if(!this.data.info.content){
-      my.showToast({
-        content: '内容不可为空',
-        duration: 2000
-      });
-      return
-    }
-    my.request({
-      url: http.roots + "saveHole",
-      method: 'POST',
-      header: {
-          "Content-Type": "application/x-www-form-urlencoded"
-      },
-      data: this.data.info,
-      dataType: 'json',
-      success: function(res) {
-        if(res.data.sta == 1){
-          if(self.data.info.tmpPic.length != 0){
-              for(let i = 0; i < self.data.info.tmpPic.length; i++){
-                my.uploadFile({
-                  url: http.roots + "upload",
-                  filePath: self.data.info.tmpPic[i],
-                  fileType:'image',
-                  fileName: 'img',
-                  formData:{
-                    pid:self.data.info.tmpPic2[i]
-                  },
-                  header: {  
-                    "Content-Type": "multipart/form-data",
-                    'accept': 'application/json'
-                  },
-                  success: function(res){
-                    var data=JSON.parse(res.data);
-                    if(data.sta == 1){
-                      my.reLaunch({
-                          url: '../hole/hole'
-                      })
-                      
-                    }else{
-                      my.showToast({
-                        type: 'fail',
-                        content: '图片上传失败',
-                        duration: 2000
-                      });
-                    }
-                  },
-                  fail: function(err){
-
-                  },
-                })
-              }
-          }else{
-            my.reLaunch({
-                url: '../hole/hole'
-            })
-          }
-        }
-      },
-      complete: function(res) {
-        
       }
     })
   },
@@ -328,7 +308,6 @@ Page({
       success: (res) => {
         let t = []
         res.apFilePaths.forEach(val => {
-          // new Date().getTime()+this.data.info.userId.slice(-4)
           let s = Math.floor(Math.random()*(9999-1000)) + 1000
           t.push(http.roots+'tmp/'+new Date().getTime()+'_'+s+'.jpg')
         })

@@ -1,13 +1,14 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/hole/hole",
     "pages/diary/diary",
     "pages/mine/mine",
-    "pages/calendar/calendar"
+    "pages/calendar/calendar",
+    "pages/schedule/schedule"
   ],
   "window": {
-    "defaultTitle": "My App"
+    "defaultTitle": "叮咚心情",
+    "allowsBounceVertical":"YES"
   },
   "tabBar": {
     "textColor": "#dddddd",
@@ -16,15 +17,15 @@
     "items": [
       {
         "pagePath": "pages/index/index",
-        "icon": "./images/zhuye.png",
-        "activeIcon": "./images/zhuyeclick.png",
-        "name": "首页"
+        "icon": "./images/beiwang.png",
+        "activeIcon": "./images/beiwangclick.png",
+        "name": "日记"
       },
       {
-        "pagePath": "pages/hole/hole",
+        "pagePath": "pages/schedule/schedule",
         "icon": "./images/hot.png",
         "activeIcon": "./images/hotclick.png",
-        "name": "树洞"
+        "name": "日程"
       },
       {
         "pagePath": "pages/calendar/calendar",

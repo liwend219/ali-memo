@@ -1,7 +1,0 @@
-{
-  "defaultTitle": "叮咚心情",
-  "usingComponents": {
-    "modal": "mini-antui/es/modal/index",
-    "input-item": "mini-antui/es/input-item/index"
-  }
-}
