@@ -116,6 +116,7 @@
       {{info.time}}
     </view>
   </list-item>
+  <view class="memo-tip">如果需要邮件提醒功能，需要在首页/我的/邮箱 -> 输入邮箱并开启自动提醒</view>
   <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">保存</button>
 </view>
 
@@ -168,7 +169,7 @@
     <view class="demo-item">
       <notice enableMarquee="{{true}}" marqueeProps="{{loop: true, leading: 500, trailing: 800, fps: 10 }}">树洞内容所有人可见，不得发布任何违法内容</notice>
     </view>
-    <textarea onInput="onInputContent" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{info.content}}" onBlur="bindTextAreaBlur" auto-height placeholder="输入树洞内容" />
+    <textarea onInput="onInputContent" maxlength="600" style="padding:20rpx 30rpx;font-size:35rpx;min-height:300rpx" value="{{info.content}}" onBlur="bindTextAreaBlur" auto-height placeholder="输入树洞内容" />
   </list>
 
   <picker onChange="moodChange" value="{{info.moodStatus}}" range="{{objectArray}}" range-key="name">

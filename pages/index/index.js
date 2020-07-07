@@ -13,6 +13,8 @@ Page({
     showComment:false,
     diaryItem:'',
     isShowTail:false,
+    versionInfo:{},
+    showNotice:false,
     isDelete:false,
     deleteItem:{},
     showLoading:false,
@@ -47,6 +49,8 @@ Page({
         activeTab:query.activeTab
       })
     }
+    this.getNotice()
+    
     // 页面加载
     my.getStorage({
       key: 'userInfo',
@@ -172,7 +176,43 @@ Page({
       }
     })
   },
-
+  getNotice(){
+    ajax('notice',{},(res) => {
+      this.setData({
+        "versionInfo":res.data
+      })
+      if(res && res.sta){
+        my.getStorage({
+          key:'version',
+          success:(v) => {
+            if(v.data){              
+              if(v.data.key != res.data.key){
+                this.setData({
+                  "showNotice":true
+                })
+              }
+            }else{
+              this.setData({
+                "showNotice":true
+              })
+            }
+          }
+        })
+      }
+      
+    })
+  },
+  closeNotice (){
+    my.setStorage({
+      key: 'version',
+      data: this.data.versionInfo,
+      success: (res) => {
+        this.setData({
+          "showNotice":false
+        })
+      }
+    });
+  },
   newDiary:function(){
       let i ;
       if(this.data.activeTab == 0){
@@ -242,7 +282,7 @@ Page({
     modify(e){
       let idx = this.data.activeTab
       my.navigateTo({
-          url: '../diary/diary?idx='+idx+'&data=' + JSON.stringify(e.currentTarget.dataset.item)
+          url: '../diary/diary?idx=0'+'&data=' + JSON.stringify(e.currentTarget.dataset.item)
       })
     },
     showTail(e){

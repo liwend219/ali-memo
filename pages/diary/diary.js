@@ -49,6 +49,7 @@ Page({
         tmpPic2:[],
         nickName:'',
         avatar:'',
+        email:'',
         isOpen:false
     },
   },
@@ -91,6 +92,17 @@ Page({
           ["info.nickName"]:res.data.nickName,
           ["info.avatar"]:res.data.avatar
         })
+      }
+    })
+
+    my.getStorage({
+      key: 'userEmail',
+      success: (res) => {
+        if(res.data){
+          this.setData({
+            ["info.email"]:res.data
+          })
+        }
       }
     })
     

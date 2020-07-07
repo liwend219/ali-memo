@@ -10,22 +10,27 @@ Page({
     opinion:'',
     showOpinion:false,
     showLoading:false,
+    showSetEmail:false,
+    info:{
+      email:'',
+      email2:''
+    },
     objectArray: [
       {
-        id: 1,
+        id: 6,
+        name: '6小时',
+      },
+      {
+        id: 12,
+        name: '12小时',
+      },
+      {
+        id: 24,
         name: '1天',
       },
       {
-        id: 3,
+        id: 72,
         name: '3天',
-      },
-      {
-        id: 5,
-        name: '5天',
-      },
-      {
-        id: 7,
-        name: '7天',
       },
     ],
   },
@@ -38,7 +43,20 @@ Page({
           nickName:res.data.nickName,
           userId:res.data.userId,
         })
-        this.getSet(res.data.userId)
+        my.getStorage({
+          key: 'userEmail',
+          success:(res2) => {
+            if(res2.data){
+              this.setData({
+                ["info.email2"]:res2.data
+              })
+            }else{
+              this.getEmail()
+            }
+          }
+        })
+        
+        this.getSet()
       },
     });
   },
@@ -48,17 +66,7 @@ Page({
       this.setData({
         selectVal:e.detail.value
       })
-      if(e.detail.value == 0){
-        len = 1
-      }else if(e.detail.value == 1){
-        len = 3
-      }else if(e.detail.value == 2){
-        len = 5
-      }else if(e.detail.value == 3){
-        len = 7
-      }else{
-        len = 3
-      }
+      len = this.data.objectArray[e.detail.value].id
       this.setRemind(len,this.data.remind)
     }
     
@@ -71,10 +79,6 @@ Page({
     }
     ajax('setSet',data,(res) => {
       if(res.sta == 1){
-          // self.setData({
-          //     ["setInfo.remindLen"]: res.data[0].remindLen,
-          //     ["setInfo.remind"]: res.data[0].remind
-          // })
       }
     })
   },
@@ -85,7 +89,8 @@ Page({
   },
   onModalClose(){
     this.setData({
-      showOpinion:false
+      showOpinion:false,
+      opinion:''
     })
   },
   onModalClick(){
@@ -94,6 +99,7 @@ Page({
     })
     let data = {
       userId:this.data.userId,
+      email:this.data.info.email2,
       nickName:this.data.nickName,
       opinion:this.data.opinion
     }
@@ -107,7 +113,8 @@ Page({
       });
     })
     this.setData({
-      showOpinion:false
+      showOpinion:false,
+      opinion:''
     })
   },
   showOpinionBox(){
@@ -119,31 +126,36 @@ Page({
     this.setData({
       remind:e.detail.value
     })
-    let len;
-    if(this.data.selectVal == 0){
-      len = 1
-    }else if(this.data.selectVal == 1){
-      len = 3
-    }else if(this.data.selectVal == 2){
-      len = 5
-    }else if(this.data.selectVal == 3){
-      len = 7
-    }else{
-      len = 3
-    }
+    let len = this.data.objectArray[this.data.selectVal].id
     this.setRemind(len,e.detail.value)
+  },
+  getEmail(){
+    ajax('user/email',{userId:this.data.userId},(res) => {
+      console.log(res)
+      if(res.sta == 1){
+        my.setStorage({
+          key: 'userEmail', // 缓存数据的key
+          data: res.data, // 要缓存的数据
+        });
+        this.setData({
+          ["info.email2"]:res.data
+        })
+      }
+      
+    })
   },
   getSet(){
     ajax('getSet',{userId:this.data.userId},(res) => {
       if(res.sta == 1){
+        console.log(res)
         let t = 0;
-        if(res.data.remindLen == 1){
+        if(res.data.remindLen == 6){
           t=0
-        }else if(res.data.remindLen == 3){
+        }else if(res.data.remindLen == 12){
           t=1
-        }else if(res.data.remindLen == 5){
+        }else if(res.data.remindLen == 24){
           t=2
-        }else if(res.data.remindLen == 7){
+        }else if(res.data.remindLen == 72){
           t=3
         }else{
           t=0
@@ -153,6 +165,50 @@ Page({
           remind:res.data.remind
         })
       }
+    })
+  },
+  onClear(){
+    this.setData({
+      ['info.email']:''
+    })
+  },
+  onInputTitle(e){
+    this.setData({
+      ["info.email"]:e.detail.value
+    })
+  },
+  onModalEmailClick(){
+    if (!(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/.test(this.data.info.email))){ 
+      my.showToast({
+        content: '邮箱格式有误，请重新输入',
+        duration: 2000
+      });
+      this.onClear()
+      return
+    }
+    this.setData({
+      ["info.email2"]:this.data.info.email
+    })
+    my.setStorage({
+      key: 'userEmail', // 缓存数据的key
+      data: this.data.info.email2, // 要缓存的数据
+    });
+    ajax('setEmail',{
+      userId:this.data.userId,
+      email:this.data.info.email2
+    },(res) => {
+      this.onModalEmailClose()
+    })
+  },
+  onModalEmailClose(){
+    this.setData({
+      "showSetEmail":false,
+      ["info.email"]:''
+    })
+  },
+  showEmailBox(){
+    this.setData({
+      "showSetEmail":true
     })
   }
 });

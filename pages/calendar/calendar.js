@@ -5,6 +5,7 @@ Page({
     scrollTop: 100,
     monthList: [],
     nowMonth:0,
+    selectMonth:0,
     nowDate:0,
     _year:0,
     _Mon:0,
@@ -45,11 +46,13 @@ Page({
   },
   onPullDownRefresh() {
     // 页面被下拉
-    this.getData(this.data.userId)
+    this.initData2(this.data.selectMonth)
   },
   monthChange(e){
-    
     if(e.detail && e.detail.value != null){
+      this.setData({
+        selectMonth:e.detail.value+1
+      })
       this.initData2(e.detail.value+1)
     }
   },

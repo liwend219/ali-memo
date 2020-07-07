@@ -49,6 +49,12 @@ Page({
   handlePlusClick (){
 
   },
+  modify(e){
+    let idx = this.data.activeTab
+    my.navigateTo({
+        url: '../diary/diary?idx=1'+'&data=' + JSON.stringify(e.currentTarget.dataset.item)
+    })
+  },
   getDiary(userid){
     ajax('getDiary',{userId:userid},(res) => {
       my.stopPullDownRefresh()

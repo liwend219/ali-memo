@@ -75,28 +75,26 @@
             </view>
           </view>
           <modal
-              show="{{showComment}}"
-              onModalClick="onModalHoleClick"
-              onModalClose="onModalHoleClose"
+            show="{{showComment}}"
+            onModalClick="onModalHoleClick"
+            onModalClose="onModalHoleClose">
+            <view slot="header">评论</view>
+              <input-item
+                placeholderStyle="font-size:35rpx"
+                data-field="name"
+                placeholder="输入评论"
+                type="text"
+                value="{{info.txt}}"
+                clear="{{true}}"
+                onClear="onClear"
+                onInput="onInputTitle">
+              </input-item>
               
-            >
-              <view slot="header">评论</view>
-                <input-item
-                  placeholderStyle="font-size:35rpx"
-                  data-field="name"
-                  placeholder="输入评论"
-                  type="text"
-                  value="{{info.txt}}"
-                  clear="{{true}}"
-                  onClear="onClear"
-                  onInput="onInputTitle">
-                </input-item>
-                
-              <view slot="footer" class="qr-delete">
-                <text>发表评论</text>
-                <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
-              </view>
-            </modal>
+            <view slot="footer" class="qr-delete">
+              <text>发表评论</text>
+              <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+            </view>
+          </modal>
 
           <view class="divider">
             <view class="divder-line"></view>
@@ -183,4 +181,15 @@
 
 <view class="model-class" onTap="onDetailClose" a:if="{{isShowTail}}">
     <image class="model-box" onTap="onDetailClose" src="{{diaryItem}}"  mode="aspectFit" />
+</view>
+
+<view class="notice" a:if="{{showNotice}}">
+  <view class="notice-box">
+    <view class="notice-title">{{versionInfo.key}} 版本更新</view>
+    <view class="notice-content">
+      <view class="notice-txt">● {{versionInfo.msg}}</view>
+      <view class="notice-txt">● 其他优化</view>
+    </view>
+    <button size="default" type="ghost" class="close-btn" onTap="closeNotice">我知道了</button>
+  </view>
 </view>

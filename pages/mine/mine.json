@@ -4,6 +4,7 @@
     "list": "mini-antui/es/list/index",
     "list-item": "mini-antui/es/list/list-item/index",
     "modal": "mini-antui/es/modal/index",
-    "picker-item": "mini-antui/es/picker-item/index"
+    "picker-item": "mini-antui/es/picker-item/index",
+    "input-item": "mini-antui/es/input-item/index"
   }
 }
