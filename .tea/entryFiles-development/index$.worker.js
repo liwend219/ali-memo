@@ -29,6 +29,7 @@ require('../../node_modules/mini-antui/es/list/index');
 require('../../node_modules/mini-antui/es/list/list-item/index');
 require('../../node_modules/mini-antui/es/picker-item/index');
 require('../../node_modules/mini-antui/es/notice/index');
+require('../../pages/test/test');
 require('../../pages/index/index');
 require('../../pages/diary/diary');
 require('../../pages/mine/mine');

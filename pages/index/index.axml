@@ -18,7 +18,11 @@
                 <image style="width:50rpx;height:50rpx" src="{{stateList[item.moodStatus]}}"></image>
                 <text style="margin-left:20rpx;">{{item.title}}</text>
               </view>
-              <text>{{item.date}}</text>
+              <view>
+                <text>{{item.date}}</text>
+                <!-- <text class="share" open-type="share" data-item="{{item}}" >分享</text> -->
+                <button class="share-btn" data-item="{{item}}" onTap="share">生成海报</button>
+              </view>
             </view>
             <view class="item-2">
               {{item.content}}
@@ -183,13 +187,17 @@
     <image class="model-box" onTap="onDetailClose" src="{{diaryItem}}"  mode="aspectFit" />
 </view>
 
-<view class="notice" a:if="{{showNotice}}">
-  <view class="notice-box">
+<view class="notice" a:if="{{showHB}}">
+  <!-- <view class="notice-box">
     <view class="notice-title">{{versionInfo.key}} 版本更新</view>
     <view class="notice-content">
       <view class="notice-txt">● {{versionInfo.msg}}</view>
       <view class="notice-txt">● 其他优化</view>
     </view>
     <button size="default" type="ghost" class="close-btn" onTap="closeNotice">我知道了</button>
-  </view>
+  </view> -->
+  <canvas id="canvas" class="canvas" style="width: 650px; height: 720px;"></canvas>
+  <!-- <button size="default" type="primary">下载图片</button> -->
+  <button type="primary" onTap="down">生成海报</button>
 </view>
+

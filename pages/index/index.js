@@ -41,7 +41,10 @@ Page({
     activeTab: 0,
     userId:'',
     nickName:'',
-    avatar:''
+    avatar:'',
+    showHB:false,
+    ctx:'',
+    bgImgUrl:''
   },
   onLoad(query) {
     if(query && query.activeTab){
@@ -49,7 +52,7 @@ Page({
         activeTab:query.activeTab
       })
     }
-    this.getNotice()
+    // this.getNotice()
     
     // 页面加载
     my.getStorage({
@@ -119,10 +122,55 @@ Page({
       title: '叮咚心情日记',
       desc: '一款记录你心情和写日记的唯美小程序',
       path: 'pages/index/index',
+      bgImgUrl:this.data.bgImgUrl
     };
   },
-
-
+  down(){
+    this.data.ctx.toTempFilePath({
+      success(res1){
+        console.log(res1.apFilePath)
+        // console.log(this)
+        // this.setData({
+        //   bgImgUrl:res1.apFilePath
+        // })
+        my.saveImage({
+          url: res1.apFilePath,
+          showActionSheet: true,
+          success: () => {
+            my.alert({
+              title: '保存成功',
+            });
+          },
+        });
+      }
+    })
+  },
+  share(e){
+    this.setData({
+      showHB:true
+    })
+    console.log(e.target.dataset)
+    this.data.ctx = my.createCanvasContext('canvas')
+    this.data.ctx.setFillStyle('#fff')//文字颜色：默认黑色
+    var that = this;
+    this.data.ctx.drawImage('../../images/bg.jpg', 60, 20, 280, 500)
+    // ctx.setFontSize(18)//设置字体大小，默认10
+    // ctx.font = "28"
+    // ctx.font ="CSS font DOMString"
+      this.data.ctx.font = 'italic bold 12px 宋体'
+      var str = e.target.dataset.item.content
+      var str2 = str.split(/[,， \n]/);
+      console.log(str2)
+      // this.data.ctx.fillText("不过是大梦初醒一场空", 50, 50)//绘制文本
+      // this.data.ctx.fillText("不过是孤影照晴空", 50, 70)
+      let h = 150;
+      str2.forEach(v => {
+        this.data.ctx.fillText(v, 120, h)//绘制文本
+        h+=20;
+      })
+      this.data.ctx.fillText(e.target.dataset.item.nickName, 210, 280)
+      this.data.ctx.draw()      
+  },
   handleTabClick({ index }) {
     this.setData({
       activeTab: index,

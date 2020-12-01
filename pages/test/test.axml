@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="canvas-view" onTap="saveImg">
+    <!-- <canvas 
+      id="canvas"
+      width="350"
+      height="1000"
+      class="canvas"
+      onTouchStart="log"
+      onTouchMove="log"
+      onTouchEnd="log"
+    /> -->
+    <canvas id="canvas" class="canvas" style="width: 650px; height: 820px;"></canvas>
+  </view>
+</view>

@@ -1,14 +1,16 @@
 {
   "pages": [
+    "pages/test/test",
     "pages/index/index",
     "pages/diary/diary",
     "pages/mine/mine",
     "pages/calendar/calendar",
     "pages/schedule/schedule"
+    
   ],
   "window": {
     "defaultTitle": "叮咚心情",
-    "allowsBounceVertical":"YES"
+    "allowsBounceVertical": "YES"
   },
   "tabBar": {
     "textColor": "#dddddd",
@@ -38,6 +40,12 @@
         "icon": "./images/gerenzhongxin.png",
         "activeIcon": "./images/gerenzhongxinclick.png",
         "name": "我的"
+      },
+      {
+        "pagePath": "pages/test/test",
+        "icon": "./images/gerenzhongxin.png",
+        "activeIcon": "./images/gerenzhongxinclick.png",
+        "name": "test"
       }
     ]
   }

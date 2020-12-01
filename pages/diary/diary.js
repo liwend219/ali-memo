@@ -200,9 +200,9 @@ Page({
                         url: '../index/index'
                     })
                   }else if(this.data.info.types == 1){
-                    my.navigateTo({
-                        url: '../schedule/schedule'
-                    })
+                    // my.navigateTo({
+                    //     url: '../schedule/schedule'
+                    // })
                   }else{
                     my.navigateTo({
                         url: '../schedule/schedule?activeTab=1'
@@ -224,9 +224,9 @@ Page({
                 url: '../index/index'
             })
           }else if(this.data.info.types == 1){
-            my.reLaunch({
-                url: '../schedule/schedule'
-            })
+            // my.reLaunch({
+            //     url: '../schedule/schedule'
+            // })
           }else{
             my.reLaunch({
                 url: '../schedule/schedule'

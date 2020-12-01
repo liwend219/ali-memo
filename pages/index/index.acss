@@ -216,6 +216,15 @@
   top:0;
   left:0;  
 }
+.canvas{
+  position: absolute;
+  width: 80%; 
+  height: 820px;
+  left:50%;
+  top:50%;
+  margin-top:-325px;
+  margin-left:-205px;
+}
 .notice-box{
   width: 80%;
   height:500rpx;
@@ -250,4 +259,16 @@
 }
 .notice-txt{
   padding:15rpx 0;
+}
+.share{
+  margin-left:20rpx;
+  color:#8989f3;
+}
+.share-btn{
+  display: inline;
+  margin-left:20rpx;
+  color:#8989f3;
+  font-size: 24rpx;
+  background: transparent;
+  border:none;
 }
