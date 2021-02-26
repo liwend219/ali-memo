@@ -94,6 +94,9 @@ Page({
     })
   },
   onModalClick(){
+    if(this.data.showLoading){
+      return
+    }
     this.setData({
       showLoading:true
     })
@@ -105,19 +108,24 @@ Page({
     }
     ajax('opinion',data,(res) => {
       this.setData({
-        showLoading:false
+        showLoading:false,
+        showOpinion:false,
+        opinion:''
       })
       my.showToast({
         content: res.msg,
         duration: 2000
       });
     })
-    this.setData({
-      showOpinion:false,
-      opinion:''
-    })
   },
   showOpinionBox(){
+    if(!this.data.info.email2){
+      my.showToast({
+        content: '请先设置邮箱',
+        duration: 2000
+      });
+      return
+    }
     this.setData({
       showOpinion:true
     })
@@ -178,6 +186,9 @@ Page({
     })
   },
   onModalEmailClick(){
+    if(this.data.showLoading){
+      return
+    }
     if (!(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/.test(this.data.info.email))){ 
       my.showToast({
         content: '邮箱格式有误，请重新输入',
@@ -202,6 +213,7 @@ Page({
   },
   onModalEmailClose(){
     this.setData({
+      showLoading:false,
       "showSetEmail":false,
       ["info.email"]:''
     })

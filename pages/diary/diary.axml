@@ -9,7 +9,6 @@
       type="text"
       value="{{info.title}}"
       clear="{{true}}"
-      onClear="onClear"
       onInput="onInputTitle">
         标题
     </input-item>
@@ -66,7 +65,13 @@
   <view>
     
   </view>
-  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">保存</button>
+  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">
+    保存
+    <loading a:if="{{showLoading}}" size="80rpx" color="#fff" className="inlineBlock" />
+    <!-- <container hasTitle='{{true}}' title='loading'>
+      
+    </container> -->
+  </button>
 </view>
 
 <view style="width: 100%;" a:if="{{info.types == 1}}">
@@ -116,8 +121,22 @@
       {{info.time}}
     </view>
   </list-item>
-  <view class="memo-tip">如果需要邮件提醒功能，需要在首页/我的/邮箱 -> 输入邮箱并开启自动提醒</view>
-  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">保存</button>
+  
+  <list-item>
+    邮件提醒 
+    <switch slot="extra"
+      controlled
+      checked="{{info.isEmailTip}}" 
+      onChange="emailTip"
+       />
+  </list-item>
+<!-- <view class="memo-tip">提醒时间在首页/我的/临近提醒时长设置</view> -->
+  
+  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">
+    保存
+    <loading a:if="{{showLoading}}" size="80rpx" color="#fff" className="inlineBlock" />
+  </button>
+  
 </view>
 
 <view style="width: 100%;" a:if="{{info.types == 2}}">
@@ -130,7 +149,6 @@
       type="text"
       value="{{info.title}}"
       clear="{{true}}"
-      onClear="onClear"
       onInput="onInputTitle">
         标题
     </input-item>
@@ -159,7 +177,10 @@
     </view>
   </list-item>
   </list>
-  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">保存</button>
+  <button style="width:90%;margin:30rpx auto;" onTap="saveDiary" type="primary">
+    保存
+    <loading a:if="{{showLoading}}" size="80rpx" color="#fff" className="inlineBlock" />
+  </button>
 </view>
 
 
@@ -210,6 +231,31 @@
   <view>
     
   </view>
-  <button style="width:90%;margin:30rpx auto;" onTap="saveHole" type="primary">发布</button>
+  <button style="width:90%;margin:30rpx auto;" onTap="saveHole" type="primary">
+    发布
+    <loading a:if="{{showLoading}}" size="80rpx" color="#fff" className="inlineBlock" />
+  </button>
 </view>
+
+<modal
+  show="{{showSetEmail}}"
+  onModalClick="onModalEmailClick"
+  onModalClose="onModalEmailClose">
+  <view slot="header">设置邮箱</view>
+    <input-item
+      placeholderStyle="font-size:35rpx"
+      data-field="name"
+      placeholder="输入邮箱地址"
+      type="text"
+      value="{{info.email}}"
+      clear="{{true}}"
+      onClear="onClear"
+      onInput="onInputTitle2">
+    </input-item>
+    
+  <view slot="footer" class="qr-delete">
+    <text>提交</text>
+    <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+  </view>
+</modal>
 

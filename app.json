@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/test/test",
+    
     "pages/index/index",
     "pages/diary/diary",
     "pages/mine/mine",
@@ -40,12 +40,6 @@
         "icon": "./images/gerenzhongxin.png",
         "activeIcon": "./images/gerenzhongxinclick.png",
         "name": "我的"
-      },
-      {
-        "pagePath": "pages/test/test",
-        "icon": "./images/gerenzhongxin.png",
-        "activeIcon": "./images/gerenzhongxinclick.png",
-        "name": "test"
       }
     ]
   }

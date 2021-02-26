@@ -7,6 +7,8 @@
     "modal": "mini-antui/es/modal/index",
     "am-checkbox": "mini-antui/es/am-checkbox/index",
     "count-down": "../../components/count-down/index",
-    "input-item": "mini-antui/es/input-item/index"
+    "input-item": "mini-antui/es/input-item/index",
+    "loading": "mini-ali-ui/es/loading/index",
+    "modal2": "mini-ali-ui/es/modal/index"
   }
 }

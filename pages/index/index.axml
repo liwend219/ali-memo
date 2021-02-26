@@ -21,7 +21,8 @@
               <view>
                 <text>{{item.date}}</text>
                 <!-- <text class="share" open-type="share" data-item="{{item}}" >分享</text> -->
-                <button class="share-btn" data-item="{{item}}" onTap="share">生成海报</button>
+                <button class="share-btn" type="primary" data-item="{{item}}" open-type="share">分享</button>
+                <!-- <button class="share-btn" data-item="{{item}}" onTap="onShareAppMessage">生成海报</button> -->
               </view>
             </view>
             <view class="item-2">
@@ -40,7 +41,7 @@
 
           <view class="divider">
             <view class="divder-line"></view>
-            <text>没有更多啦</text>
+            <text>{{tiptxt}}</text>
             <view class="divder-line"></view>
           </view>
         </view>
@@ -53,6 +54,7 @@
                     <image class="avatar" src="{{item.avatar}}"></image>
                     <text class="author">{{item.nickName}}</text>
                     <image class="mood" src="{{stateList[item.moodStatus]}}"></image>
+                    <view class="admin-md" a:if="{{item.userId == 2088712303661034 && item.nickName == '番薯大大'}}">md</view>
                     <view class="admin-d" a:if="{{userId == 2088712303661034}}" data-item="{{item}}" data-type="1" onTap="deleteH">×</view>
                 </view>
                 <text>{{item.time}}</text>
@@ -96,13 +98,13 @@
               
             <view slot="footer" class="qr-delete">
               <text>发表评论</text>
-              <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+              <loading a:if="{{showLoading}}" size="80rpx" color="red" className="inlineBlock" />
             </view>
           </modal>
 
           <view class="divider">
             <view class="divder-line"></view>
-            <text>没有更多啦</text>
+            <text>{{tiptxt}}</text>
             <view class="divder-line"></view>
           </view>
         </view>
@@ -135,7 +137,7 @@
 
     <view class="divider">
       <view class="divder-line"></view>
-      <text>没有更多啦</text>
+      <text>{{tiptxt}}</text>
       <view class="divder-line"></view>
     </view>
   </view>
@@ -154,8 +156,10 @@
   <view slot="header">确认删除</view>
   删除后不可恢复，取消点右上角×
   <view slot="footer" class="qr-delete">
-    <text>确认删除</text>
-    <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+    <text>
+      确认删除
+      <loading a:if="{{showLoading}}" size="80rpx" color="red" className="inlineBlock" />
+    </text>
   </view>
 </modal>
 
@@ -186,18 +190,3 @@
 <view class="model-class" onTap="onDetailClose" a:if="{{isShowTail}}">
     <image class="model-box" onTap="onDetailClose" src="{{diaryItem}}"  mode="aspectFit" />
 </view>
-
-<view class="notice" a:if="{{showHB}}">
-  <!-- <view class="notice-box">
-    <view class="notice-title">{{versionInfo.key}} 版本更新</view>
-    <view class="notice-content">
-      <view class="notice-txt">● {{versionInfo.msg}}</view>
-      <view class="notice-txt">● 其他优化</view>
-    </view>
-    <button size="default" type="ghost" class="close-btn" onTap="closeNotice">我知道了</button>
-  </view> -->
-  <canvas id="canvas" class="canvas" style="width: 650px; height: 720px;"></canvas>
-  <!-- <button size="default" type="primary">下载图片</button> -->
-  <button type="primary" onTap="down">生成海报</button>
-</view>
-

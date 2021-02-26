@@ -27,3 +27,7 @@ image{
   font-size:26rpx;
   color:#899bb4;
 }
+.inlineBlock {
+  display: inline-block;
+  vertical-align: middle;
+}

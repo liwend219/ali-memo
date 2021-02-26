@@ -23,6 +23,7 @@ Page({
     holeDType:1,
     holeList:[],
     show:false,
+    tiptxt:'加载中😲',
     stateList:[
       '../../images/cool.png',
       '../../images/flushed.png',
@@ -42,9 +43,7 @@ Page({
     userId:'',
     nickName:'',
     avatar:'',
-    showHB:false,
-    ctx:'',
-    bgImgUrl:''
+    bgImgUrl:'',
   },
   onLoad(query) {
     if(query && query.activeTab){
@@ -89,22 +88,6 @@ Page({
     })
     
   },
-  onReady(e) {
-    
-    // 页面加载完成
-  },
-  onShow() {
-    // 页面显示
-  },
-  onHide() {
-    // 页面隐藏
-  },
-  onUnload() {
-    // 页面被关闭
-  },
-  onTitleClick() {
-    // 标题被点击
-  },
   onPullDownRefresh() {
     // 页面被下拉
     if(this.data.activeTab == 0){
@@ -124,15 +107,11 @@ Page({
       path: 'pages/index/index',
       bgImgUrl:this.data.bgImgUrl
     };
+    
   },
   down(){
     this.data.ctx.toTempFilePath({
       success(res1){
-        console.log(res1.apFilePath)
-        // console.log(this)
-        // this.setData({
-        //   bgImgUrl:res1.apFilePath
-        // })
         my.saveImage({
           url: res1.apFilePath,
           showActionSheet: true,
@@ -144,32 +123,6 @@ Page({
         });
       }
     })
-  },
-  share(e){
-    this.setData({
-      showHB:true
-    })
-    console.log(e.target.dataset)
-    this.data.ctx = my.createCanvasContext('canvas')
-    this.data.ctx.setFillStyle('#fff')//文字颜色：默认黑色
-    var that = this;
-    this.data.ctx.drawImage('../../images/bg.jpg', 60, 20, 280, 500)
-    // ctx.setFontSize(18)//设置字体大小，默认10
-    // ctx.font = "28"
-    // ctx.font ="CSS font DOMString"
-      this.data.ctx.font = 'italic bold 12px 宋体'
-      var str = e.target.dataset.item.content
-      var str2 = str.split(/[,， \n]/);
-      console.log(str2)
-      // this.data.ctx.fillText("不过是大梦初醒一场空", 50, 50)//绘制文本
-      // this.data.ctx.fillText("不过是孤影照晴空", 50, 70)
-      let h = 150;
-      str2.forEach(v => {
-        this.data.ctx.fillText(v, 120, h)//绘制文本
-        h+=20;
-      })
-      this.data.ctx.fillText(e.target.dataset.item.nickName, 210, 280)
-      this.data.ctx.draw()      
   },
   handleTabClick({ index }) {
     this.setData({
@@ -214,6 +167,9 @@ Page({
   getDiary(userid){
     ajax('getDiary',{userId:userid},(res) => {
       my.stopPullDownRefresh()
+      this.setData({
+        tiptxt:'没有更多啦'
+      })
       if(res.sta == 1){
         this.setData({
           diaryArr:res.data.diary.reverse(),
@@ -285,6 +241,9 @@ Page({
       })
     },
     onModalClick(){
+      if(this.data.showLoading){
+        return
+      }
       this.data.timeArr.forEach(val => {
         if(val._id == this.data.deleteItem._id){
           val.isClear = true
@@ -297,11 +256,11 @@ Page({
         timeArr:this.data.timeArr
       })
       ajax('deleteDiary',this.data.deleteItem,(res) => {
+        this.setData({
+          isDelete:false,
+          showLoading:false
+        })
         if(res.sta == 1){
-            this.setData({
-              isDelete:false,
-              showLoading:false
-            })
             my.showToast({
               type: 'success',
               content: '删除成功',
@@ -353,9 +312,10 @@ Page({
       })
     },
     onModalHoleClick(){
-      this.setData({
-        showLoading:true,
-      })
+      if(this.data.showLoading){
+        return
+      }
+      
       this.setData({
         ["tmpData.txt"]:this.data.info.txt
       })
@@ -364,11 +324,11 @@ Page({
           content: '评论不可为空',
           duration: 2000
         });
-        this.setData({
-          showLoading:false,
-        })
         return 
       }
+      this.setData({
+        showLoading:true,
+      })
       ajax('publish/comment',this.data.tmpData,(res) => {
         if(res.sta == 1){
           this.setData({
@@ -434,6 +394,9 @@ Page({
         })  
     },
     deleteHoleClick(){
+      if(this.data.showLoading){
+        return
+      }
       if(!this.data.info.txt){
         my.showToast({
           content: '输入口令',
@@ -448,6 +411,9 @@ Page({
         userId:this.data.userId,
         nickName:this.data.nickName
       }
+      this.setData({
+        showLoading:true
+      })
       if(this.data.holeDType == 1){
         ajax('deleteHole',obj,(res) => {
           if(res.sta == 1){
@@ -522,5 +488,11 @@ Page({
         holeDType:e.currentTarget.dataset.type,
         deleteItem: t,
       })
+    },
+    onModalClick23(){
+
+    },
+    onModalClose23(){
+
     }
 });

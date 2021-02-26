@@ -6,6 +6,7 @@
     "tab-content": "mini-antui/es/tabs/tab-content/index",
     "modal": "mini-antui/es/modal/index",
     "am-checkbox": "mini-antui/es/am-checkbox/index",
-    "count-down": "../../components/count-down/index"
+    "count-down": "../../components/count-down/index",
+    "loading": "mini-ali-ui/es/loading/index"
   }
 }

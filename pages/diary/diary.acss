@@ -25,3 +25,7 @@
   font-size: 26rpx;
   color:rgb(45, 183, 245);
 }
+.inlineBlock {
+  display: inline-block;
+  vertical-align: middle;
+}

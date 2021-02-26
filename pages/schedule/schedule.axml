@@ -30,7 +30,7 @@
           </view>
           <view class="divider">
             <view class="divder-line"></view>
-            <text>没有更多啦</text>
+            <text>{{tiptxt}}</text>
             <view class="divder-line"></view>
           </view>
         </view>
@@ -51,7 +51,7 @@
           </view>
           <view class="divider">
             <view class="divder-line"></view>
-            <text>没有更多啦</text>
+            <text>{{tiptxt}}</text>
             <view class="divder-line"></view>
           </view>
         </view>
@@ -72,6 +72,6 @@
   删除后不可恢复，取消点右上角×
   <view slot="footer" class="qr-delete">
     <text>确认删除</text>
-    <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+    <loading a:if="{{showLoading}}" size="80rpx" color="red" className="inlineBlock" />
   </view>
 </modal>

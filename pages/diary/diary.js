@@ -50,8 +50,11 @@ Page({
         nickName:'',
         avatar:'',
         email:'',
-        isOpen:false
+        isOpen:false,
+        isEmailTip:false,
     },
+    showLoading:false,
+    showSetEmail:false,
   },
   onLoad(e) {
     if(e && e.idx){
@@ -92,6 +95,8 @@ Page({
           ["info.nickName"]:res.data.nickName,
           ["info.avatar"]:res.data.avatar
         })
+
+        
       }
     })
 
@@ -100,18 +105,38 @@ Page({
       success: (res) => {
         if(res.data){
           this.setData({
-            ["info.email"]:res.data
+            ["info.email"]:res.data,
+            ["info.isEmailTip"]:true,
           })
+        }else{
+          this.getEmail()
         }
       }
     })
     
   },
   onClear(){
-
+    this.setData({
+      ['info.email']:''
+    })
   },
   selectMood(){
 
+  },
+  getEmail(){
+    ajax('user/email',{userId:this.data.info.userId},(res) => {
+      if(res.sta == 1){
+        my.setStorage({
+          key: 'userEmail', // 缓存数据的key
+          data: res.data, // 要缓存的数据
+        });
+        this.setData({
+          ["info.email"]:res.data,
+          ["info.isEmailTip"]:true,
+        })
+      }
+      
+    })
   },
   moodChange(e) {
     if(e.detail && e.detail.value != null){
@@ -151,6 +176,9 @@ Page({
     });
   },
   saveDiary(){
+    if(this.data.showLoading){
+      return
+    }
     if(this.data.info.types == 0 && !this.data.info.content){
       my.showToast({
         content: '内容不可为空',
@@ -175,7 +203,13 @@ Page({
     this.setData({
       ["info.pid"]:new Date().getTime()+'_dingdong_'+this.data.info.userId
     })
+    this.setData({
+      showLoading:true
+    })
     ajax('saveDiary',this.data.info,(res) => {
+      this.setData({
+        showLoading:false
+      })
       if(res.sta == 1){
         if(this.data.info.tmpPic.length != 0){
           for(let i = 0; i < this.data.info.tmpPic.length; i++){
@@ -223,10 +257,6 @@ Page({
             my.reLaunch({
                 url: '../index/index'
             })
-          }else if(this.data.info.types == 1){
-            // my.reLaunch({
-            //     url: '../schedule/schedule'
-            // })
           }else{
             my.reLaunch({
                 url: '../schedule/schedule'
@@ -245,6 +275,9 @@ Page({
   },
   saveHole(){
     // /saveHole
+    if(this.data.showLoading){
+      return
+    }
     if(!this.data.info.content){
       my.showToast({
         content: '内容不可为空',
@@ -252,7 +285,13 @@ Page({
       });
       return
     }
+    this.setData({
+      showLoading:true
+    })
     ajax('saveHole',this.data.info,(res) => {
+      this.setData({
+        showLoading:false
+      })
       if(res.sta == 1){
         if(this.data.info.tmpPic.length != 0){
             for(let i = 0; i < this.data.info.tmpPic.length; i++){
@@ -303,6 +342,11 @@ Page({
       ["info.title"]:e.detail.value
     })
   },
+  onInputTitle2(e){
+    this.setData({
+      ["info.email"]:e.detail.value
+    })
+  },
   onInputContent(e){
     this.setData({
       ["info.content"]:e.detail.value
@@ -333,6 +377,48 @@ Page({
   checkOpen(){
     this.setData({
       ["info.isOpen"]:!this.data.info.isOpen
+    })
+  },
+  emailTip (e) {
+    if(!this.data.info.email){
+      this.setData({
+        showSetEmail:true
+      })
+      return
+    }
+    this.setData({
+      ["info.isEmailTip"]:e.detail.value
+    })
+  },
+
+  onModalEmailClick(){
+    if (!(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/.test(this.data.info.email))){ 
+      my.showToast({
+        content: '邮箱格式有误，请重新输入',
+        duration: 2000
+      });
+      this.onClear()
+      return
+    }
+    ajax('setEmail',{
+      userId:this.data.info.userId,
+      email:this.data.info.email
+    },(res) => {
+      this.setData({
+        ["info.isEmailTip"]:true
+      })
+      this.onModalEmailClose()
+    })
+  },
+  onClear(){
+    this.setData({
+      ['info.email']:''
+    })
+  },
+  onModalEmailClose(){
+    this.setData({
+      "showSetEmail":false,
+      ["info.email"]:''
     })
   },
 });

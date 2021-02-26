@@ -1,6 +1,7 @@
 import ajax from '../../lib/fetch'
 Page({
   data: {
+    tiptxt:'加载中😲',
     userid:'',
     activeTab:0,
     memoArr:[],
@@ -59,6 +60,9 @@ Page({
     ajax('getDiary',{userId:userid},(res) => {
       my.stopPullDownRefresh()
       this.setData({
+        tiptxt:'没有更多啦'
+      })
+      this.setData({
         // diaryArr:res.data.diary.reverse(),
         memoArr:res.data.memo.reverse(),
         timeArr:res.data.time.reverse(),
@@ -110,6 +114,9 @@ Page({
     })
   },
   onModalClick(){
+    if(this.data.showLoading){
+      return
+    }
     this.data.timeArr.forEach(val => {
       if(val._id == this.data.deleteItem._id){
         val.isClear = true
@@ -122,11 +129,11 @@ Page({
       timeArr:this.data.timeArr
     })
     ajax('deleteDiary',this.data.deleteItem,(res) => {
+      this.setData({
+        isDelete:false,
+        showLoading:false
+      })
       if(res.sta == 1){
-        this.setData({
-          isDelete:false,
-          showLoading:false
-        })
         my.showToast({
           type: 'success',
           content: '删除成功',

@@ -205,6 +205,13 @@
 .admin-d{
   padding-left:50rpx;
 }
+.admin-md{
+  padding:1px 4px;
+  border-radius:3px;
+  color:#ff6010;
+  border:1px solid #ff6010;
+  margin-left:10rpx;
+}
 .delete-h-i{
   padding-left:100rpx;
 }
@@ -271,4 +278,17 @@
   font-size: 24rpx;
   background: transparent;
   border:none;
+}
+.share-btn2{
+  background: transparent;
+  border:none;
+  color:red;
+}
+.inlineBlock {
+  display: inline-block;
+  vertical-align: middle;
+}
+.hb-btn{
+  color:blue;
+  font-size: 12px;
 }

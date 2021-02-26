@@ -7,7 +7,7 @@
       <view style="text-align:center;padding-top:15rpx;">{{nickName}}</view>
     </view>
   </view>
-  <picker onChange="dayChange" value="{{selectVal}}" range="{{objectArray}}" range-key="name">
+  <!-- <picker onChange="dayChange" value="{{selectVal}}" range="{{objectArray}}" range-key="name">
     <view class="row">
       <list-item
         className="select-mood"
@@ -22,8 +22,8 @@
         </view>
       </list-item>
     </view>
-  </picker>
-  <list >
+  </picker> -->
+  <!-- <list >
     <list-item
       
     >
@@ -32,7 +32,7 @@
       <view slot="extra">
         <switch checked="{{remind}}" onChange="switchChange"/>
       </view>
-  </list>
+  </list> -->
 
   <list-item
     className="select-mood"
@@ -74,7 +74,7 @@
     
   <view slot="footer" class="qr-delete">
     <text>发送给作者</text>
-    <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+    <loading a:if="{{showLoading}}" size="80rpx" color="blue" className="inlineBlock" />
   </view>
 </modal>
 
@@ -96,6 +96,6 @@
     
   <view slot="footer" class="qr-delete">
     <text>提交</text>
-    <image a:if="{{showLoading}}" class="loading" src="../../images/loading.gif" mode="" />
+    <loading a:if="{{showLoading}}" size="80rpx" color="#00b7f4" className="inlineBlock" />
   </view>
 </modal>
